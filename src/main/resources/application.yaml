@@ -1,4 +1,12 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: query-api-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ussd
+    username: ${DB_USERNAME:default}
+    password: ${DB_PASSWORD:default}
+    driver-class-name: org.postgresql.Driver
     
