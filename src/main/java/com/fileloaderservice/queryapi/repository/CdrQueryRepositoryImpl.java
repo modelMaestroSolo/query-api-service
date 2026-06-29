@@ -9,7 +9,6 @@ import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,13 +21,11 @@ public class CdrQueryRepositoryImpl implements CdrQueryRepository{
         this.jdbc = jdbc;
     }
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
-
     private final RowMapper<CdrRecordResponse> rowMapper = (rs, rowNum) -> {
         Timestamp recordDate = rs.getTimestamp("record_date");
 
         return new CdrRecordResponse(
-                recordDate == null ? null : LocalDateTime.parse(recordDate.toLocalDateTime().format(formatter)),
+                recordDate == null ? null : recordDate.toLocalDateTime(),
                 rs.getString("msisdn"),
                 rs.getString("imsi")
         );
@@ -54,6 +51,6 @@ public class CdrQueryRepositoryImpl implements CdrQueryRepository{
             params.add(imsi);
         }
 
-        return jdbc.query(sql.toString(), rowMapper, params);
+        return jdbc.query(sql.toString(), rowMapper, params.toArray());
     }
 }
